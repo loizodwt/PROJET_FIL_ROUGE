@@ -4,7 +4,7 @@
 	justify-content: space-between;
 	padding: 1rem 2rem;
 	background: var(--color-surface);
-	border-bottom: none;
+	border-bottom: 2px solid var(--color-border);
 	box-shadow: var(--shadow);
 	position: sticky;
 	top: 0;
@@ -46,19 +46,19 @@
 }
 
 .btn {
-	background: var(--color-primary);
-	border: none;
-	color: white;
+	background: none;
+	border: 1px solid var(--color-border);
+	color: var(--color-text-muted);
 	padding: 0.4rem 0.85rem;
 	border-radius: var(--radius-sm);
 	font-size: 0.85rem;
 	transition: all 0.15s;
-	box-shadow: 0 2px 8px rgba(255, 107, 157, 0.25);
 }
 
 .btn:hover {
-	background: var(--color-primary-hover);
-	box-shadow: 0 4px 14px rgba(255, 107, 157, 0.35);
+	border-color: var(--color-primary);
+	color: var(--color-primary);
+	background: var(--color-primary-light);
 }
 
 .btnPrimary {
