@@ -1,0 +1,97 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+:root {
+	--color-bg: #fff0f5;
+	--color-surface: #ffffff;
+	--color-surface-alt: #fff5f8;
+	--color-border: transparent;
+	--color-primary: #ff6b9d;
+	--color-primary-hover: #ff4d8d;
+	--color-primary-light: #ffe4ef;
+	--color-text: #3d2535;
+	--color-text-muted: #b0788f;
+	--color-accent: #ffb7c5;
+	--color-success: #4caf50;
+	--color-error: #e53e5e;
+	--radius: 6px;
+	--radius-sm: 4px;
+	--shadow:
+		0 2px 14px rgba(255, 255, 255, 0.9), 0 1px 4px rgba(255, 107, 157, 0.1);
+	--shadow-hover:
+		0 4px 24px rgba(255, 255, 255, 1), 0 2px 12px rgba(255, 107, 157, 0.18);
+	--font: 'lores-12', system-ui, sans-serif;
+	--font-script: 'Pinyon Script', cursive;
+}
+
+body {
+	font-family: var(--font);
+	background: var(--color-bg);
+	color: var(--color-text);
+	min-height: 100vh;
+}
+
+a {
+	color: var(--color-primary);
+	text-decoration: none;
+}
+
+a:hover {
+	color: var(--color-primary-hover);
+}
+
+button,
+input,
+select,
+textarea {
+	font-family: var(--font);
+	cursor: pointer;
+}
+
+input,
+textarea {
+	cursor: text;
+	border: 1.5px solid var(--color-primary);
+	outline: none;
+}
+
+input:focus,
+textarea:focus {
+	border-color: var(--color-primary-hover);
+	box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+::selection {
+	background: var(--color-accent);
+	color: var(--color-text);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--color-accent);
+	border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--color-primary);
+}
+
+.loading {
+	text-align: center;
+	padding: 4rem;
+	color: var(--color-text-muted);
+}

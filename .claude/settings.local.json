@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /Users/loizo/Documents/FilRouge/api && npx prisma generate 2>&1 | tail -5)",
+      "Bash(docker info:*)",
+      "Bash(docker compose:*)",
+      "Bash(open -a Docker && sleep 8 && docker info 2>&1 | head -2)",
+      "Bash(curl -s http://localhost:3000/health && echo \"\" && curl -s http://localhost:3000/films | head -c 200)",
+      "Bash(curl -s http://localhost:5173 | head -30)",
+      "Bash(sleep 3 && curl -s -X POST http://localhost:3000/auth/register \\\\\n  -H \"Content-Type: application/json\" \\\\\n  -d '{\"email\":\"test@test.com\",\"password\":\"test123\",\"name\":\"Test\"}' | head -c 200)",
+      "Bash(curl -s -X POST http://localhost:5174/api/auth/register \\\\\n  -H \"Content-Type: application/json\" \\\\\n  -d '{\"email\":\"test2@test.com\",\"password\":\"test123\",\"name\":\"Test2\"}' | head -c 200)",
+      "Bash(git remote:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

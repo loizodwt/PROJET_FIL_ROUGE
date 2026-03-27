@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  favorites    Favorite[]
+  watchlist    Watchlist[]
+  ratings      Rating[]
+  viewHistory  ViewHistory[]
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  slug  String @unique
+  films Film[]
+}
+
+model Film {
+  id          Int      @id @default(autoincrement())
+  title       String
+  synopsis    String?
+  releaseYear Int?
+  director    String?
+  photoUrl    String?
+  avgRating   Float?   @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id])
+
+  favorites   Favorite[]
+  watchlist   Watchlist[]
+  ratings     Rating[]
+  viewHistory ViewHistory[]
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  filmId    Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  film Film @relation(fields: [filmId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, filmId])
+}
+
+model Watchlist {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  filmId    Int
+  watched   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  film Film @relation(fields: [filmId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, filmId])
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  filmId    Int
+  score     Int      // 1-5
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  film Film @relation(fields: [filmId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, filmId])
+}
+
+model ViewHistory {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  filmId    Int
+  viewedAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  film Film @relation(fields: [filmId], references: [id], onDelete: Cascade)
+}

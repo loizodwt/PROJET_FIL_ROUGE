@@ -1,0 +1,80 @@
+.nav {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem 2rem;
+	background: var(--color-surface);
+	border-bottom: none;
+	box-shadow: var(--shadow);
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+.brand {
+	font-size: 2rem;
+	font-family: var(--font-script);
+	font-weight: 400;
+	color: var(--color-primary);
+	letter-spacing: 0.5px;
+	transition: color 0.15s;
+}
+
+.brand:hover {
+	color: var(--color-primary-hover);
+}
+
+.links {
+	display: flex;
+	align-items: center;
+	gap: 1.25rem;
+}
+
+.links a {
+	color: var(--color-text-muted);
+	font-size: 0.9rem;
+	transition: color 0.15s;
+}
+
+.links a:hover {
+	color: var(--color-primary);
+}
+
+.username {
+	font-size: 0.9rem;
+	color: var(--color-text-muted);
+}
+
+.btn {
+	background: var(--color-primary);
+	border: none;
+	color: white;
+	padding: 0.4rem 0.85rem;
+	border-radius: var(--radius-sm);
+	font-size: 0.85rem;
+	transition: all 0.15s;
+	box-shadow: 0 2px 8px rgba(255, 107, 157, 0.25);
+}
+
+.btn:hover {
+	background: var(--color-primary-hover);
+	box-shadow: 0 4px 14px rgba(255, 107, 157, 0.35);
+}
+
+.btnPrimary {
+	background: var(--color-primary);
+	color: white !important;
+	padding: 0.4rem 0.85rem;
+	border-radius: var(--radius-sm);
+	font-size: 0.85rem;
+	font-weight: 500;
+	transition:
+		background 0.15s,
+		box-shadow 0.15s;
+	box-shadow: 0 2px 8px rgba(255, 107, 157, 0.25);
+}
+
+.btnPrimary:hover {
+	background: var(--color-primary-hover) !important;
+	box-shadow: 0 4px 14px rgba(255, 107, 157, 0.35);
+}
