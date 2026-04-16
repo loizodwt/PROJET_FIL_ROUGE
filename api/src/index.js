@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const morgan = require('morgan');
 const path = require('path');
 
 const authRoutes = require('./routes/auth.routes');
@@ -14,6 +15,9 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 app.use(cors());
 app.use(express.json());
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan('dev'));
+}
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Routes

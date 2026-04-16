@@ -95,3 +95,54 @@ textarea:focus {
 	padding: 4rem;
 	color: var(--color-text-muted);
 }
+
+/* ── Accessibilité ───────────────────────────────────────────── */
+
+/* Texte visible uniquement pour les lecteurs d'écran */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Lien d'évitement (skip to main content) */
+.skip-link {
+	position: absolute;
+	top: -100%;
+	left: 1rem;
+	z-index: 9999;
+	background: var(--color-primary);
+	color: white;
+	padding: 0.6rem 1.2rem;
+	border-radius: var(--radius-sm);
+	font-size: 0.9rem;
+	font-weight: 600;
+	text-decoration: none;
+	transition: top 0.15s;
+}
+
+.skip-link:focus {
+	top: 1rem;
+	outline: 3px solid white;
+	outline-offset: 2px;
+}
+
+/* Focus visible global pour tous les éléments interactifs */
+:focus-visible {
+	outline: 3px solid var(--color-primary);
+	outline-offset: 2px;
+	border-radius: var(--radius-sm);
+}
+
+/* Annule l'outline sur les inputs (ils ont déjà box-shadow) */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+	outline: none;
+}

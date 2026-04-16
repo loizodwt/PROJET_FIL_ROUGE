@@ -71,6 +71,12 @@
 	font-weight: 600;
 }
 
+.reviewStars {
+	color: #f5a623;
+	font-size: 1rem;
+	letter-spacing: 2px;
+}
+
 .synopsis {
 	line-height: 1.7;
 	color: var(--color-text-muted);
@@ -203,6 +209,34 @@
 .reviewHeader {
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 	margin-bottom: 0.5rem;
 	font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+	.hero {
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.poster,
+	.posterPlaceholder {
+		width: 100%;
+		max-width: 200px;
+		min-width: unset;
+		align-self: center;
+	}
+
+	.info h1 {
+		font-size: 1.5rem;
+	}
+
+	.actions {
+		flex-wrap: wrap;
+	}
+
+	.rateForm {
+		max-width: 100%;
+	}
 }

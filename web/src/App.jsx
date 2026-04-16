@@ -20,8 +20,11 @@ function ProtectedRoute({ children, adminOnly = false }) {
 export default function App() {
   return (
     <>
+      <a href="#main-content" className="skip-link">
+        Aller au contenu principal
+      </a>
       <Navbar />
-      <main>
+      <main id="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/films/:id" element={<FilmDetail />} />

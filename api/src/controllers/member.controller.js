@@ -60,4 +60,22 @@ async function getHistory(req, res, next) {
   }
 }
 
-module.exports = { getFavorites, toggleFavorite, getWatchlist, toggleWatchlist, rateFilm, getHistory };
+async function getStats(req, res, next) {
+  try {
+    const stats = await memberService.getStats(req.user.id);
+    res.json(stats);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getRecommendations(req, res, next) {
+  try {
+    const films = await memberService.getRecommendations(req.user.id);
+    res.json(films);
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { getFavorites, toggleFavorite, getWatchlist, toggleWatchlist, rateFilm, getHistory, getRecommendations, getStats };

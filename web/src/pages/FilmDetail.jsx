@@ -1,7 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { api } from '../lib/api';
+import { imageUrl } from '../lib/imageUrl';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Loader from '../components/Loader';
@@ -13,13 +16,16 @@ export default function FilmDetail() {
   const { user, token } = useAuth();
   const queryClient = useQueryClient();
   const { addToast } = useToast();
+  const { t } = useTranslation();
   const [ratingScore, setRatingScore] = useState(5);
   const [ratingComment, setRatingComment] = useState('');
 
   const { data: film, isLoading, isError } = useQuery({
     queryKey: ['film', id],
-    queryFn: () => api.get(`/films/${id}`),
+    queryFn: () => api.get(`/films/${id}`, token),
   });
+
+  usePageTitle(film?.title);
 
   const favMutation = useMutation({
     mutationFn: () => api.post(`/me/favorites/${id}`, {}, token),
@@ -42,21 +48,22 @@ export default function FilmDetail() {
     mutationFn: () => api.post(`/me/ratings/${id}`, { score: ratingScore, comment: ratingComment }, token),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['film', id] });
+      queryClient.invalidateQueries({ queryKey: ['recommendations'] });
       setRatingComment('');
       addToast('Votre note a été enregistrée !', 'success');
     },
-    onError: () => addToast('Erreur lors de l\'envoi de la note.', 'error'),
+    onError: () => addToast("Erreur lors de l'envoi de la note.", 'error'),
   });
 
   if (isLoading) return <Loader />;
-  if (isError) return <EmptyState icon="🎬" message="Film non trouvé." />;
-  if (!film) return <EmptyState icon="🎬" message="Film non trouvé." />;
+  if (isError) return <EmptyState icon="🎬" message={t('film.notFound')} />;
+  if (!film) return <EmptyState icon="🎬" message={t('film.notFound')} />;
 
   return (
     <div className={styles.page}>
       <div className={styles.hero}>
         {film.photoUrl ? (
-          <img src={`/api${film.photoUrl}`} alt={film.title} className={styles.poster} />
+          <img src={imageUrl(film.photoUrl)} alt={film.title} className={styles.poster} />
         ) : (
           <div className={styles.posterPlaceholder} aria-hidden="true">🎬</div>
         )}
@@ -65,8 +72,10 @@ export default function FilmDetail() {
           <div className={styles.meta}>
             {film.category && <span className={styles.badge}>{film.category.name}</span>}
             {film.releaseYear && <span>{film.releaseYear}</span>}
-            {film.director && <span>Réalisé par {film.director}</span>}
-            {film.avgRating > 0 && <span className={styles.rating}>★ {film.avgRating.toFixed(1)} / 5</span>}
+            {film.director && <span>{t('film.directedBy')} {film.director}</span>}
+            {film.avgRating > 0 && (
+              <span className={styles.rating}>★ {film.avgRating.toFixed(1)} / 5</span>
+            )}
           </div>
           {film.synopsis && <p className={styles.synopsis}>{film.synopsis}</p>}
 
@@ -78,7 +87,7 @@ export default function FilmDetail() {
                 className={styles.actionBtn}
                 aria-label="Ajouter aux favoris"
               >
-                ♥ Favoris
+                {t('film.favorites')}
               </button>
               <button
                 onClick={() => watchMutation.mutate()}
@@ -86,7 +95,7 @@ export default function FilmDetail() {
                 className={styles.actionBtn}
                 aria-label="Ajouter à la watchlist"
               >
-                + Watchlist
+                {t('film.watchlist')}
               </button>
             </div>
           )}
@@ -95,21 +104,23 @@ export default function FilmDetail() {
 
       {user && (
         <section className={styles.rateSection}>
-          <h2>Votre note</h2>
+          <h2>{t('film.yourRating')}</h2>
           <div className={styles.rateForm}>
             <label>
-              Note :
+              {t('film.ratingLabel')}
               <select
                 value={ratingScore}
                 onChange={e => setRatingScore(Number(e.target.value))}
                 className={styles.select}
                 aria-label="Note de 1 à 5"
               >
-                {[1,2,3,4,5].map(n => <option key={n} value={n}>{n} ★</option>)}
+                {[1, 2, 3, 4, 5].map(n => (
+                  <option key={n} value={n}>{n} ★</option>
+                ))}
               </select>
             </label>
             <textarea
-              placeholder="Votre commentaire (optionnel)"
+              placeholder={t('film.commentPlaceholder')}
               value={ratingComment}
               onChange={e => setRatingComment(e.target.value)}
               className={styles.textarea}
@@ -121,7 +132,7 @@ export default function FilmDetail() {
               disabled={rateMutation.isPending}
               className={styles.submitBtn}
             >
-              {rateMutation.isPending ? 'Envoi...' : 'Soumettre'}
+              {rateMutation.isPending ? t('film.submitting') : t('film.submit')}
             </button>
           </div>
         </section>
@@ -129,12 +140,15 @@ export default function FilmDetail() {
 
       {film.ratings?.length > 0 && (
         <section className={styles.reviews}>
-          <h2>Avis ({film.ratings.length})</h2>
+          <h2>{t('film.reviews')} ({film.ratings.length})</h2>
           {film.ratings.map(r => (
             <div key={r.id} className={styles.review}>
               <div className={styles.reviewHeader}>
                 <strong>{r.user.name}</strong>
-                <span className={styles.rating}>{'★'.repeat(r.score)}{'☆'.repeat(5 - r.score)}</span>
+                <span className={styles.reviewStars} aria-hidden="true">
+                  {'★'.repeat(r.score)}{'☆'.repeat(5 - r.score)}
+                </span>
+                <span className="sr-only">{r.score} étoiles sur 5</span>
               </div>
               {r.comment && <p>{r.comment}</p>}
             </div>

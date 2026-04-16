@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { imageUrl } from '../lib/imageUrl';
 import styles from './FilmCard.module.css';
 
 export default function FilmCard({ film }) {
@@ -6,7 +7,7 @@ export default function FilmCard({ film }) {
     <Link to={`/films/${film.id}`} className={styles.card} aria-label={`Voir ${film.title}`}>
       <div className={styles.poster}>
         {film.photoUrl ? (
-          <img src={`/api${film.photoUrl}`} alt={film.title} loading="lazy" />
+          <img src={imageUrl(film.photoUrl)} alt={film.title} loading="lazy" />
         ) : (
           <div className={styles.placeholder} aria-hidden="true">✿</div>
         )}

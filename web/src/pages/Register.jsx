@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import styles from './Auth.module.css';
@@ -14,15 +16,17 @@ function getPasswordStrength(password) {
   if (/[A-Z]/.test(password)) score++;
   if (/[0-9]/.test(password)) score++;
   if (/[^A-Za-z0-9]/.test(password)) score++;
-  if (score <= 1) return { level: 1, label: 'Faible' };
-  if (score <= 3) return { level: 2, label: 'Moyen' };
-  return { level: 3, label: 'Fort' };
+  if (score <= 1) return { level: 1, labelKey: 'auth.strengthWeak' };
+  if (score <= 3) return { level: 2, labelKey: 'auth.strengthMedium' };
+  return { level: 3, labelKey: 'auth.strengthStrong' };
 }
 
 export default function Register() {
   const { register, login, user } = useAuth();
   const navigate = useNavigate();
   const { addToast } = useToast();
+  const { t } = useTranslation();
+  usePageTitle(t('auth.registerTitle'));
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,21 +43,20 @@ export default function Register() {
 
   function validateField(fieldName, value) {
     if (fieldName === 'name') {
-      if (!value || value.trim().length < 2) return 'Le nom doit contenir au moins 2 caractères';
+      if (!value || value.trim().length < 2) return t('auth.nameTooShort');
     }
     if (fieldName === 'email') {
-      if (!value) return 'Email requis';
-      if (!EMAIL_REGEX.test(value)) return 'Email invalide';
+      if (!value) return t('auth.emailRequired');
+      if (!EMAIL_REGEX.test(value)) return t('auth.emailInvalid');
     }
     if (fieldName === 'password') {
-      if (!value || value.length < 6) return 'Le mot de passe doit contenir au moins 6 caractères';
+      if (!value || value.length < 6) return t('auth.passwordTooShort');
     }
     return '';
   }
 
   function handleBlur(fieldName, value) {
-    const error = validateField(fieldName, value);
-    setErrors(prev => ({ ...prev, [fieldName]: error }));
+    setErrors(prev => ({ ...prev, [fieldName]: validateField(fieldName, value) }));
   }
 
   async function handleSubmit(e) {
@@ -82,61 +85,64 @@ export default function Register() {
   return (
     <div className={styles.page}>
       <form onSubmit={handleSubmit} className={styles.form} aria-label="Formulaire d'inscription" noValidate>
-        <h1>Inscription</h1>
+        <h1>{t('auth.registerTitle')}</h1>
         {globalError && <p className={styles.error} role="alert">{globalError}</p>}
         <label>
-          Nom
+          {t('auth.name')}
           <input
             type="text"
             value={name}
             onChange={e => setName(e.target.value)}
             onBlur={e => handleBlur('name', e.target.value)}
             autoComplete="name"
-            aria-label="Nom"
+            aria-label={t('auth.name')}
             aria-invalid={!!errors.name}
           />
           {errors.name && <span className={styles.fieldError}>{errors.name}</span>}
         </label>
         <label>
-          Email
+          {t('auth.email')}
           <input
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             onBlur={e => handleBlur('email', e.target.value)}
             autoComplete="email"
-            aria-label="Email"
+            aria-label={t('auth.email')}
             aria-invalid={!!errors.email}
           />
           {errors.email && <span className={styles.fieldError}>{errors.email}</span>}
         </label>
         <label>
-          Mot de passe
+          {t('auth.password')}
           <input
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             onBlur={e => handleBlur('password', e.target.value)}
             autoComplete="new-password"
-            aria-label="Mot de passe"
+            aria-label={t('auth.password')}
             aria-invalid={!!errors.password}
           />
           {errors.password && <span className={styles.fieldError}>{errors.password}</span>}
           {password && (
-            <div className={styles.strengthBar} aria-label={`Force du mot de passe : ${strength.label}`}>
+            <div
+              className={styles.strengthBar}
+              aria-label={`Force du mot de passe : ${t(strength.labelKey)}`}
+            >
               <div
                 className={`${styles.strengthFill} ${styles[`strength${strength.level}`]}`}
                 style={{ width: `${(strength.level / 3) * 100}%` }}
               />
-              <span className={styles.strengthLabel}>{strength.label}</span>
+              <span className={styles.strengthLabel}>{t(strength.labelKey)}</span>
             </div>
           )}
         </label>
         <button type="submit" disabled={loading} className={styles.btn}>
-          {loading ? 'Création...' : 'Créer un compte'}
+          {loading ? t('auth.creating') : t('auth.registerBtn')}
         </button>
         <p className={styles.link}>
-          Déjà un compte ? <Link to="/login">Connexion</Link>
+          {t('auth.alreadyAccount')} <Link to="/login">{t('auth.loginTitle')}</Link>
         </p>
       </form>
     </div>

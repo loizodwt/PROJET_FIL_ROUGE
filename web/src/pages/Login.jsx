@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import styles from './Auth.module.css';
@@ -10,6 +12,8 @@ export default function Login() {
   const { login, user } = useAuth();
   const navigate = useNavigate();
   const { addToast } = useToast();
+  const { t } = useTranslation();
+  usePageTitle(t('auth.loginTitle'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
@@ -23,18 +27,17 @@ export default function Login() {
 
   function validateField(name, value) {
     if (name === 'email') {
-      if (!value) return 'Email requis';
-      if (!EMAIL_REGEX.test(value)) return 'Email invalide';
+      if (!value) return t('auth.emailRequired');
+      if (!EMAIL_REGEX.test(value)) return t('auth.emailInvalid');
     }
     if (name === 'password') {
-      if (!value) return 'Mot de passe requis';
+      if (!value) return t('auth.passwordRequired');
     }
     return '';
   }
 
   function handleBlur(name, value) {
-    const error = validateField(name, value);
-    setErrors(prev => ({ ...prev, [name]: error }));
+    setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
   }
 
   async function handleSubmit(e) {
@@ -61,39 +64,39 @@ export default function Login() {
   return (
     <div className={styles.page}>
       <form onSubmit={handleSubmit} className={styles.form} aria-label="Formulaire de connexion" noValidate>
-        <h1>Connexion</h1>
+        <h1>{t('auth.loginTitle')}</h1>
         {globalError && <p className={styles.error} role="alert">{globalError}</p>}
         <label>
-          Email
+          {t('auth.email')}
           <input
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             onBlur={e => handleBlur('email', e.target.value)}
             autoComplete="email"
-            aria-label="Email"
+            aria-label={t('auth.email')}
             aria-invalid={!!errors.email}
           />
           {errors.email && <span className={styles.fieldError}>{errors.email}</span>}
         </label>
         <label>
-          Mot de passe
+          {t('auth.password')}
           <input
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             onBlur={e => handleBlur('password', e.target.value)}
             autoComplete="current-password"
-            aria-label="Mot de passe"
+            aria-label={t('auth.password')}
             aria-invalid={!!errors.password}
           />
           {errors.password && <span className={styles.fieldError}>{errors.password}</span>}
         </label>
         <button type="submit" disabled={loading} className={styles.btn}>
-          {loading ? 'Connexion...' : 'Se connecter'}
+          {loading ? t('auth.loggingIn') : t('auth.loginBtn')}
         </button>
         <p className={styles.link}>
-          Pas encore de compte ? <Link to="/register">Inscription</Link>
+          {t('auth.noAccount')} <Link to="/register">{t('auth.register')}</Link>
         </p>
       </form>
     </div>

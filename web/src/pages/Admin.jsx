@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
@@ -9,8 +10,9 @@ export default function Admin() {
   const { token } = useAuth();
   const queryClient = useQueryClient();
   const { addToast } = useToast();
+  usePageTitle('Administration');
 
-  const [form, setForm] = useState({ title: '', synopsis: '', releaseYear: '', director: '', categoryId: '' });
+  const [form, setForm] = useState({ title: '', synopsis: '', releaseYear: '', director: '', categoryId: '', photoUrl: '' });
   const [editId, setEditId] = useState(null);
   const [error, setError] = useState('');
   const [photoFile, setPhotoFile] = useState(null);
@@ -51,6 +53,7 @@ export default function Admin() {
           releaseYear: form.releaseYear ? parseInt(form.releaseYear) : undefined,
           director: form.director || undefined,
           categoryId: form.categoryId ? parseInt(form.categoryId) : undefined,
+          photoUrl: form.photoUrl || undefined,
         };
         if (editId) {
           return api.put(`/films/${editId}`, body, token);
@@ -60,7 +63,7 @@ export default function Admin() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['films'] });
-      setForm({ title: '', synopsis: '', releaseYear: '', director: '', categoryId: '' });
+      setForm({ title: '', synopsis: '', releaseYear: '', director: '', categoryId: '', photoUrl: '' });
       setEditId(null);
       setError('');
       setPhotoFile(null);
@@ -117,6 +120,7 @@ export default function Admin() {
       releaseYear: film.releaseYear || '',
       director: film.director || '',
       categoryId: film.categoryId || '',
+      photoUrl: film.photoUrl || '',
     });
   }
 
@@ -190,19 +194,39 @@ export default function Admin() {
             rows={3}
             aria-label="Synopsis"
           />
-          <div>
+          <div className={styles.photoField}>
+            <input
+              placeholder="URL de l'image (ex: https://...)"
+              value={form.photoUrl}
+              onChange={e => {
+                setForm(f => ({ ...f, photoUrl: e.target.value }));
+                if (e.target.value) {
+                  setPhotoFile(null);
+                  if (photoRef.current) photoRef.current.value = '';
+                }
+              }}
+              className={styles.input}
+              aria-label="URL de l'image"
+              disabled={!!photoFile}
+            />
+            <span className={styles.photoOr}>ou</span>
             <label className={styles.fileLabel}>
-              Photo (optionnel)
               <input
                 type="file"
                 accept="image/*"
                 ref={photoRef}
-                onChange={e => setPhotoFile(e.target.files[0] || null)}
+                onChange={e => {
+                  setPhotoFile(e.target.files[0] || null);
+                  if (e.target.files[0]) setForm(f => ({ ...f, photoUrl: '' }));
+                }}
                 className={styles.fileInput}
-                aria-label="Photo du film"
+                aria-label="Importer une photo"
               />
             </label>
             {photoFile && <p className={styles.fileName}>{photoFile.name}</p>}
+            {form.photoUrl && !photoFile && (
+              <img src={form.photoUrl} alt="preview" className={styles.photoPreview} onError={e => e.target.style.display='none'} />
+            )}
           </div>
         </div>
         <div className={styles.formActions}>

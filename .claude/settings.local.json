@@ -10,7 +10,11 @@
       "Bash(sleep 3 && curl -s -X POST http://localhost:3000/auth/register \\\\\n  -H \"Content-Type: application/json\" \\\\\n  -d '{\"email\":\"test@test.com\",\"password\":\"test123\",\"name\":\"Test\"}' | head -c 200)",
       "Bash(curl -s -X POST http://localhost:5174/api/auth/register \\\\\n  -H \"Content-Type: application/json\" \\\\\n  -d '{\"email\":\"test2@test.com\",\"password\":\"test123\",\"name\":\"Test2\"}' | head -c 200)",
       "Bash(git remote:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(kill 34959)",
+      "Bash(docker compose *)",
+      "Bash(docker exec *)",
+      "Bash(docker cp *)"
     ]
   }
 }

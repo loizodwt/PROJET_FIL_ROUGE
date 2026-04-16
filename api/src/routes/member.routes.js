@@ -15,5 +15,7 @@ router.post('/watchlist/:filmId', memberController.toggleWatchlist);
 router.post('/ratings/:filmId', memberController.rateFilm);
 
 router.get('/history', memberController.getHistory);
+router.get('/recommendations', memberController.getRecommendations);
+router.get('/stats', memberController.getStats);
 
 module.exports = router;
